@@ -1,3 +1,4 @@
 # REP
 Street vendor locator app.
-Find, Rate and review street vendors.
+Find, Rate and Review street vendors.
+Eat. Live. Love.
