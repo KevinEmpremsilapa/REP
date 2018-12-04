@@ -1,4 +1,4 @@
-//Sign up Screen
+//Sign up Vendor Screen
 import React, { Component } from "react";
 import {
   View,
@@ -24,7 +24,7 @@ import * as firebase from "firebase";
 
 export default class Signup extends Component {
   static navigationOptions = {
-    title: "Sign Up"
+    title: "SignUpVendor"
   };
 
   constructor(props) {
@@ -53,7 +53,7 @@ export default class Signup extends Component {
         .then(res => {
           firebase
             .database()
-            .ref("users/" + res.user.uid)
+            .ref("vendors/" + res.user.uid)
             .set({
               email: email,
               name: name,
@@ -112,9 +112,9 @@ export default class Signup extends Component {
 
           <Text
             style={{ textAlign: "center", marginTop: 10, padding: 10 }}
-            onPress={() => this.props.navigation.navigate("SignupVendor")}
+            onPress={() => this.props.navigation.navigate("SignupScreen")}
           >
-            Are you a new vendor? Sign Up
+            Are you a new user? Sign Up
             <Text style={{ textDecorationLine: "underline" }}> here </Text>
           </Text>
         </Form>
