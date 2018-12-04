@@ -1,4 +1,4 @@
-//Home Screen
+//Home Screen Vendor
 import React, { Component } from "react";
 import MapView from "react-native-maps";
 import {
@@ -25,8 +25,8 @@ export default class Home extends Component {
   }
 
   state = { currentUser: null };
-//animate zoom on location by pressing button
   state = { moveToUserLocation: true };
+  //will animate zoom in on location on press
   _gotoCurrentLocation(e) {
     this.map.animateToRegion({
       latitude: this.state.latitude,
@@ -35,7 +35,7 @@ export default class Home extends Component {
       longitudeDelta: 0.005845874547958374
     });
   }
-//find user location using geolocation
+//find position of user using geolocation: longitute and lattitude
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(position => {
       var lat = parseFloat(position.coords.latitude);
@@ -52,7 +52,7 @@ export default class Home extends Component {
 
     //only works for specific user name when /users/UID/name
     //can get all user information by: /users/uid
-    let ref = db.ref(`/users/${currentUser.uid}/name`);
+    let ref = db.ref(`/vendors/${currentUser.uid}/name`);
 
     //get user info and display in alert box
     ref.on("value", function(snapshot) {
@@ -70,7 +70,7 @@ export default class Home extends Component {
   }
 
   static navigationOptions = {
-    title: "Home Screen"
+    title: "HomeScreenVendor"
   };
 
   render() {
