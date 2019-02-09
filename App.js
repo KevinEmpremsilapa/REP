@@ -3,8 +3,6 @@
 */
 import React from 'react';
 import {RkButton} from 'react-native-ui-kitten';
-// V3 NAV ERROR
-//import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { createStackNavigator, createAppContainer} from 'react-navigation';
 
 import Main from './Screens/Main';
@@ -14,15 +12,12 @@ import SignupVendor from './Screens/SignupVendor';
 import HomeScreenVendor from './Screens/HomeScreenVendor';
 
 
-// V3 NAV ERROR
-// export default ...
 export default class App extends React.Component{
+
+
     render(){
         return(
-            // V3 NAV ERROR
             <AppContainer/>  
-            
-            
         );
      }
 }
