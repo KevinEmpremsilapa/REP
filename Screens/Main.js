@@ -1,10 +1,16 @@
 import React from "react";
-import { StyleSheet, Text, View, ImageBackground } from "react-native";
+import { StyleSheet, Text, View, ImageBackground, TextInput, Image, Platform, TouchableOpacity } from "react-native";
 import * as firebase from "firebase";
-
 //fixes yellow warning in expo 'setting a timer for a long period...'
 import { YellowBox } from 'react-native';
 import _ from 'lodash';
+// Jack ADDS
+import styles from "./Styles";
+import LinearGradient from 'react-native-linear-gradient';
+import GradientButton from 'react-native-gradient-buttons';
+import sunsetBG from './Images/sunsetBG3.png';
+import PasswordInputText from 'react-native-hide-show-password-input';
+
 //fixes yellow warning for expo..
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
@@ -13,11 +19,6 @@ console.warn = message => {
     _console.warn(message);
   }
 };
-
-// JS ADDS
-import LinearGradient from 'react-native-linear-gradient';
-import GradientButton from 'react-native-gradient-buttons';
-import sunsetBG from './Images/sunsetBG3.png';
 
 // Initialize Firebase
 var config = {
@@ -42,6 +43,13 @@ import {
 } from "native-base";
 
 export default class App extends React.Component {
+
+  // Show / Hide Password
+  managePasswordVisibility = () =>
+  {
+    this.setState({ hidePassword: !this.state.hidePassword });
+  }
+
   static navigationOptions = {
     title: "Main Screen"
   };
@@ -55,7 +63,8 @@ export default class App extends React.Component {
       email: "",
       password: "",
       error: "",
-      loading: false
+      loading: false,
+      hidePassword: true
     };
   }
 
@@ -146,7 +155,6 @@ export default class App extends React.Component {
     return (
       
        <ImageBackground source={sunsetBG} style={styles.backgroundContainer}>
-          
           <View
             style={styles.form}>
             <Form>
@@ -158,25 +166,38 @@ export default class App extends React.Component {
                        onChangeText={email => this.setState({ email })}
                 />
               </Item>
+
               <Item 
                 rounded
                 style={styles.formInput}>
-                <Input placeholder = "Password"
-                       onChangeText={password => this.setState({ password })}
+                <Input     
+                  placeholder = "Password"
+                  underlineColorAndroid = "transparent" 
+                  secureTextEntry = { this.state.hidePassword } 
+                  style = { styles.textBox }
+                  onChangeText={password => this.setState({ password })}
                 />
+                <TouchableOpacity 
+                  activeOpacity = { 0.8 } 
+                  style = { styles.visibilityBtn } 
+                  onPress = { this.managePasswordVisibility }>
+                  <Image 
+                    source = { ( this.state.hidePassword ) ? require('./Images/hide.png') : require('./Images/view.png') } 
+                    style = { styles.btnImage } />
+                </TouchableOpacity>
               </Item>
               <GradientButton
-                  style={{ marginVertical: 8, marginTop: 15, alignSelf: 'center'}}
-                  text="Sign In"
-                  textStyle={{ fontSize: 20, color: '#FF6D6F'}}      
-                  gradientBegin="#FFF"
-                  gradientEnd="#FFF"           
-                  gradientDirection="diagonal"
-                  height={50}
-                  width={150}
-                  radius={50}
-                  success
-                  onPressAction={() => this.loginUser(this.state.email, this.state.password)}
+                style={{ marginVertical: 8, marginTop: 15, alignSelf: 'center'}}
+                text="Login"
+                textStyle={{ fontSize: 20, color: '#FF6D6F'}}      
+                gradientBegin="#FFF"
+                gradientEnd="#FFF"           
+                gradientDirection="diagonal"
+                height={50}
+                width={150}
+                radius={50}
+                success
+                onPressAction={() => this.loginUser(this.state.email, this.state.password)}
               />
             </Form>
           </View>
@@ -201,76 +222,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  // Style Background
-  backgroundContainer:{
-    flex: 1,
-    resizeMode: 'cover',
-    alignSelf: 'stretch',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  // Alignment
-  centerView: {
-    marginTop: 10,
-    alignItems: 'center'
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    marginBottom: 36
-  },
-  form:{
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingTop: 360,
-    alignSelf: 'center'
-  },
-  bottom: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    marginBottom: 20
-  },
-
-  // Style Form
-  formInput:{
-    marginTop: 10, 
-    paddingHorizontal: 15,
-    width: 310, 
-    alignSelf: 'center', 
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    borderColor: 'rgba(255, 255, 255, 0.85)'
-  },
-  smallFont: {
-    color: '#FFF',
-    padding: 5, 
-    textAlign: "center",
-    fontWeight: 'bold'
-  }
-});
-
-/*
-Colors:
- // Original Image Colors (Currently in use)
-  #FBBC82
-  #FB8B74   
-  #FF6D6F  
-  #8F425F
-  #87456F
-  #4C2250
-
-  // Faded Image Colors
-  #FAB7AF
-  #F7B8B1
-  #CF9FC7
-  #CD9BCC
-
-  #F8B195
-  #F67280
-  #C06C84
-  #6C5B7B
-  #355C7D
- */
