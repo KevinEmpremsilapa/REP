@@ -1,7 +1,9 @@
 //Home Screen
 import React, { Component } from "react";
 import MapView from "react-native-maps";
+import {SearchBar} from "react-native-elements";
 import {
+  ScrollView,
   View,
   Text,
   Button,
@@ -13,6 +15,8 @@ import {
 import styles from "./Styles";
 import * as firebase from "firebase";
 
+const win = Dimensions.get("window");
+
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -20,12 +24,14 @@ export default class Home extends Component {
       latitude: null,
       longitude: null,
       error: null,
+      listingData: [],
       name: " "
     };
   }
 
+
   state = { currentUser: null };
-//animate zoom on location by pressing button
+  //animate zoom on location by pressing button
   state = { moveToUserLocation: true };
   _gotoCurrentLocation(e) {
     this.map.animateToRegion({
@@ -35,8 +41,25 @@ export default class Home extends Component {
       longitudeDelta: 0.005845874547958374
     });
   }
-//find user location using geolocation
-  componentDidMount() {
+  //find user location using geolocation
+  componentWillMount() {
+    //iterate through each vendor's location, using "on" instead of "once"
+    //will check for any change in location
+    let q = firebase.database().ref("vendors");
+    var finished = [];
+    var that = this;
+    q.once("value", snapshot => {
+      snapshot.forEach(function(data) {
+        let result = data.val();
+        result["key"] = data.key;
+        finished.push(result);
+      });
+    }).then(function() {
+      that.setState({
+        listingData: finished
+      });
+    });
+    
     navigator.geolocation.getCurrentPosition(position => {
       var lat = parseFloat(position.coords.latitude);
       var long = parseFloat(position.coords.longitude);
@@ -76,17 +99,16 @@ export default class Home extends Component {
   render() {
     const { name } = this.state;
     const { currentUser } = this.state;
+   
+
+   
 
     return (
       //SearchBar
       //Map
       //FoodIconSlider
       //ShopTables
-      <View style={styles.container}>
-        <Text>Welcome {name} ! </Text>
-        <Text>Email {currentUser && currentUser.email} </Text>
-        <Text>User Id {currentUser && currentUser.uid} ! </Text>
-
+      <View>
         <MapView
           ref={ref => {
             this.map = ref;
@@ -101,9 +123,15 @@ export default class Home extends Component {
               this.state.moveToUserLocation = false;
             }
           }}
-          showsUserLocation
+          showsUserLocation = {true}
+          showsMyLocationButton = {true}
           onRegionChangeComplete={region => {}}
-          style={{ flex: 1 }}
+          style={{
+            alignSelf: "center",
+            marginTop: 0,
+            height: 400,
+            width: win.width
+          }}
           region={this.props.coordinate}
           showsUserLocation={true}
         >
@@ -117,16 +145,48 @@ export default class Home extends Component {
               <View style={styles.marker} />
             </View>
           </MapView.Marker>
+          {this.state.listingData.map(function(x) {
+            return (
+              <MapView.Marker
+                //display marker for a vendor's location
+                coordinate={{
+                  latitude: x.location.vendorLatitude,
+                  longitude: x.location.vendorLongitude
+                }}
+              />
+            );
+          })}
         </MapView>
 
         <Button
-          title="Focus Location"
+          title="Get Location"
           onPress={() => this._gotoCurrentLocation()}
           style={styles.spot}
         >
           location
         </Button>
+
+        <SearchBar
+          placeholder = "Seach Location"
+          styel = {{width: 350}}
+          lightTheme
+          round
+          />
+
+        <Text
+         style ={{fontSize: 18}}>
+         Hey there, {currentUser && currentUser.name}
+        </Text>
+        <Text 
+          style = {{fontSize: 22, fontWeight: "bold"}}>
+          Where are you going? 
+        </Text>
+          
+        <Text>Email {currentUser && currentUser.email} </Text>
+        <Text>User Id {currentUser && currentUser.uid} </Text>
+      
       </View>
     );
   }
 }
+
