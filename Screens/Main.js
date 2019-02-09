@@ -6,7 +6,6 @@ import { YellowBox } from 'react-native';
 import _ from 'lodash';
 // Jack ADDS
 import styles from "./Styles";
-import LinearGradient from 'react-native-linear-gradient';
 import GradientButton from 'react-native-gradient-buttons';
 import sunsetBG from './Images/sunsetBG3.png';
 import PasswordInputText from 'react-native-hide-show-password-input';
