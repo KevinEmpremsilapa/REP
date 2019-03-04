@@ -1,8 +1,8 @@
-//Sign up Screen
+//Sign up Vendor Screen
 import React, { Component } from "react";
-import * as firebase from "firebase";
 import GradientButton from 'react-native-gradient-buttons';
 import gradientBG from './Images/gradientBG.png';
+import * as firebase from "firebase";
 import styles from "./Styles";
 
 import {
@@ -28,13 +28,11 @@ import {
 } from "native-base";
 
 export default class Signup extends Component {
-
   static navigationOptions = {
     header: null,
     drawerLockMode: "locked-closed"
   }
 
-  // Show / Hide Password
   managePasswordVisibility = () =>
   {
     this.setState({ hidePassword: !this.state.hidePassword });
@@ -67,7 +65,7 @@ export default class Signup extends Component {
         .then(res => {
           firebase
             .database()
-            .ref("users/" + res.user.uid)
+            .ref("vendors/" + res.user.uid)
             .set({
               email: email,
               name: name,
@@ -83,28 +81,28 @@ export default class Signup extends Component {
     return (
       <ImageBackground source={gradientBG} style={styles.backgroundContainer}>
         <Form>
-        <View style={styles.form}>
+          <View style={styles.form}>
           <Item 
-                rounded
-                style={styles.formInput}>
+            rounded
+            style={styles.formInput}>
             <Input 
               placeholder = "Full Name"
               onChangeText={name => this.setState({ name })} />
           </Item>
 
           <Item 
-              rounded
-              style={styles.formInput} >
-            <Input
-              placeholder = "Phone" 
+            rounded
+            style={styles.formInput}>
+            <Input 
+              placeholder = "Phone"
               onChangeText={phone => this.setState({ phone })} />
           </Item>
 
           <Item 
             rounded
-            style={styles.formInput}>
-            <Input
-              placeholder = "Email" 
+            style={styles.formInput}>        
+            <Input 
+              placeholder = "Email"
               onChangeText={email => this.setState({ email })} />
           </Item>
 
@@ -127,16 +125,16 @@ export default class Signup extends Component {
                 style = { styles.btnImage } />
             </TouchableOpacity>
           </Item>
-
+          
           <GradientButton
-            style={{ marginVertical: 8, marginTop: 15, alignSelf: 'center' }}
-            text="Create Account"
+            style={{ marginVertical: 8, marginTop: 15, alignSelf: 'center'}}
+            text="Create Vendor Account"
             textStyle={{ fontSize: 20, color: '#FF6D6F'}}      
             gradientBegin="#FFF"
             gradientEnd="#FFF"           
             gradientDirection="diagonal"
             height={50}
-            width={200}
+            width={260}
             radius={50}             
             onPressAction={() =>
               this.signUpUser(
@@ -145,8 +143,9 @@ export default class Signup extends Component {
               this.state.name,
               this.state.phone
             )}
-          />
+            />
           </View>
+
           <View style={styles.bottom}>
           <Text
             style={styles.smallFont}
@@ -157,9 +156,9 @@ export default class Signup extends Component {
           </Text>
           <Text
             style={styles.smallFont}
-            onPress={() => this.props.navigation.navigate("SignupVendor")}
+            onPress={() => this.props.navigation.navigate("SignupScreen")}
           >
-            Are you a new vendor? Sign up{" "}
+            Are you a new user? Sign up{" "}
             <Text style={{ textDecorationLine: "underline" }}>here</Text>
           </Text>
           </View>

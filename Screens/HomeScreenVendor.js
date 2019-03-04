@@ -1,24 +1,23 @@
-//Home Screen
+//Home Screen Vendor
 import React, { Component } from "react";
 import MapView from "react-native-maps";
 import {
   View,
   Text,
   Button,
-  Asyncstorage,
   Dimensions,
   TouchableOpacity,
   TextInput,
-  StyleSheet
+  StyleSheet,
+  Asyncstorage
 } from "react-native";
-import {Header, Left, Right, Icon} from 'native-base';
 import styles from "./Styles";
 import * as firebase from "firebase";
+import {Header, Left, Right, Icon} from 'native-base';
 import SlidingPanel from "react-native-sliding-up-down-panels";
 import {SearchBar} from "react-native-elements";
 const win = Dimensions.get("window");
-
-export default class Home extends Component {
+export default class HomeVendor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,11 +26,11 @@ export default class Home extends Component {
       error: null,
       name: " "
     };
-    this._isMounted = false;
   }
+  
   state = { currentUser: null };
-
   state = { moveToUserLocation: true };
+  //will animate zoom in on location on press
   _gotoCurrentLocation(e) {
     this.map.animateToRegion({
       latitude: this.state.latitude,
@@ -40,9 +39,8 @@ export default class Home extends Component {
       longitudeDelta: 0.005845874547958374
     });
   }
-
+//find position of user using geolocation: longitute and lattitude
   componentDidMount() {
-    this._isMounted =true;
     navigator.geolocation.getCurrentPosition(position => {
       var lat = parseFloat(position.coords.latitude);
       var long = parseFloat(position.coords.longitude);
@@ -58,7 +56,7 @@ export default class Home extends Component {
 
     //only works for specific user name when /users/UID/name
     //can get all user information by: /users/uid
-    let ref = db.ref(`/users/${currentUser.uid}/name`);
+    let ref = db.ref(`/vendors/${currentUser.uid}/name`);
 
     //get user info and display in alert box
     ref.on("value", function(snapshot) {
@@ -74,19 +72,15 @@ export default class Home extends Component {
       });
     });
   }
-  componentWillUnmount()
-  {
-    this._isMounted = false;
-  }
+
   static navigationOptions = {
     header: null,
     drawerIcon: ({})=>(
-      <Icon name="md-home" style={styles.drawerIcon}/>
+      <Icon name="md-home" style={{fontSize:24, color:'#4C2250'}}/>
     )
   }
 
   render() {
-
     const { name } = this.state;
     const { currentUser } = this.state;
 
@@ -95,22 +89,17 @@ export default class Home extends Component {
       //Map
       //FoodIconSlider
       //ShopTables
-      
-      //add hamburger menu to page, used to style
       <View style={styles.container2}>
         <Header style = {{backgroundColor: '#f9e0d6'}}>
 			    <Left>
 				    <Icon name="md-menu" onPress={()=> this.props.navigation.openDrawer()}/>
 			    </Left>
 		    </Header>
-		  <View style = {styles.menuOptionsStyle}>
-      <Button
-          title="Focus Location"
-          onPress={() => this._gotoCurrentLocation()}
-          style={styles.spot}
-        >
-                  location
-        </Button>
+        <View style = {styles.menuOptionsStyle}>
+        <Text>Welcome {name} ! </Text>
+        <Text>Email {currentUser && currentUser.email} </Text>
+        <Text>User Id {currentUser && currentUser.uid} ! </Text>
+
         <MapView
           ref={ref => {
             this.map = ref;
@@ -142,39 +131,31 @@ export default class Home extends Component {
             </View>
           </MapView.Marker>
         </MapView>
-        <SlidingPanel
-          headerLayoutHeight = {win.height - 650}
-          headerLayout = {() =>
-          <View style={styles.slidingPanelLayout2Style}> 
-            <Text
-              style ={{fontSize: 18, fontWeight: "bold"}}>
-              {"\n\t"} Find a vendor near you {currentUser && currentUser.name}
-            </Text>
-            
-            <SearchBar
-              placeholder = "Seach Location"
-              lightTheme
-              round
-              backgroundColor = "white"
-            />
 
-            <Text
-              style ={{fontSize: 26, fontWeight: "bold", alignSelf: "center"}}>
-              {"\n\t"} YOUR AD HERE! {currentUser && currentUser.name}
-            </Text>
-          
-          </View>
-          } 
-          /*
-          slidingPanelLayout = {() =>
-            <View style={{backgroundColor: 'white', width: win.width, height: win.height}}>
-              <Text>Email  </Text>
-              <Text>User Id </Text>
-            </View>
-          }*/
-        />
-        
-		  </View>
+        <Button
+          title="Focus Location"
+          onPress={() => this._gotoCurrentLocation()}
+          style={styles.spot}
+        >
+          location
+        </Button>
+      </View>
+      <SlidingPanel
+            headerLayoutHeight = {100}
+            headerLayout = { () =>
+                <View style={styles.headerLayoutStyle}>
+                  <Text style={styles.commonTextStyle}>User Info</Text>
+                </View>
+            }
+            slidingPanelLayout = { () =>
+                <View style={styles.slidingPanelLayoutStyle}>
+                    <Text>Welcome {name} ! </Text>
+                    <Text>Email {currentUser && currentUser.email} </Text>
+                    <Text>User Id {currentUser && currentUser.uid} ! </Text>
+                </View>
+            }
+      />
+      
       </View>
     );
   }

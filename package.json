@@ -1,7 +1,5 @@
 {
-  "name": "empty-project-template",
   "main": "node_modules/expo/AppEntry.js",
-  "private": true,
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,14 +7,24 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "^30.0.1",
-    "firebase": "^5.5.9",
+    "expo": "^32.0.0",
+    "firebase": "^5.8.2",
     "mysql": "^2.16.0",
-    "native-base": "^2.8.1",
-    "react": "16.3.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
-    "react-native-firebase": "^5.0.0",
-    "react-native-maps": "^0.22.1",
-    "react-navigation": "^2.18.0"
-  }
+    "native-base": "^2.8.2",
+    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-circle-drawer": "^1.0.0",
+    "react-native-elements": "^1.1.0",
+    "react-native-firebase": "^5.2.2",
+    "react-native-gradient-buttons": "^1.2.9",
+    "react-native-hide-show-password-input": "^1.0.7",
+    "react-native-maps": "^0.23.0",
+    "react-native-sliding-up-down-panels": "^1.0.0",
+    "react-navigation": "^2.6.2",
+    "rn-sliding-up-panel": "^1.3.1"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^5.0.0"
+  },
+  "private": true
 }
