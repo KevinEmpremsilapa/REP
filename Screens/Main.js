@@ -1,10 +1,15 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ImageBackground, TextInput, Image, Platform, TouchableOpacity } from "react-native";
 import * as firebase from "firebase";
-
 //fixes yellow warning in expo 'setting a timer for a long period...'
 import { YellowBox } from 'react-native';
 import _ from 'lodash';
+// Jack ADDS
+import styles from "./Styles";
+import GradientButton from 'react-native-gradient-buttons';
+import sunsetBG from '../assets/Images/sunsetBG3.png';
+import PasswordInputText from 'react-native-hide-show-password-input';
+
 //fixes yellow warning for expo..
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
@@ -13,6 +18,7 @@ console.warn = message => {
     _console.warn(message);
   }
 };
+
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyCdRrAkOeud4rODubGM7ZMs8HqJE7204RM",
@@ -36,9 +42,12 @@ import {
 } from "native-base";
 
 export default class App extends React.Component {
-  static navigationOptions = {
-    title: "Main Screen"
-  };
+
+  // Show / Hide Password
+  managePasswordVisibility = () =>
+  {
+    this.setState({ hidePassword: !this.state.hidePassword });
+  }
 
 //sets values
   constructor(props) {
@@ -49,13 +58,14 @@ export default class App extends React.Component {
       email: "",
       password: "",
       error: "",
-      loading: false
+      loading: false,
+      hidePassword: true
     };
   }
 
   //for clickable text user 'padding: #' to increase sensitivity and touchable areas
   signUpUser = (email, password) => {
-    this.props.navigation.navigate("SignupScreen");
+    this.props.navigation.navigate("VendorUser");
   };
 
   //check if user is logging in
@@ -96,7 +106,7 @@ export default class App extends React.Component {
         this.setState({ error: "\nInvalid Email or Password", loading: false });
       });
   };
-
+ 
   //check if vendor
   loginVendor = (email, password) => {
     firebase
@@ -135,71 +145,82 @@ export default class App extends React.Component {
       });
   };
 
+  // Screen View Login Page
   render() {
+    
     return (
-      <Container style={styles.container}>
-        <Text style={styles.mainTitle}>REP</Text>
-        <Text style={styles.mainTitle}>Raspados | Elotes | Paletas</Text>
+      
+       <ImageBackground source={sunsetBG} style={styles.backgroundContainer}>
+          <View
+            style={styles.form}>
+            <Form>
+              <Text style={{  color: 'red', fontWeight: "bold", alignSelf: 'center'}}>{this.state.error}</Text>
+              <Item 
+                rounded
+                style={styles.formInput}>
+                <Input placeholder = "Email"
+                       onChangeText={email => this.setState({ email })}
+                />
+              </Item>
 
-        <Form>
-          <Item floatingLabel>
-            <Label>email</Label>
-            <Input onChangeText={email => this.setState({ email })} />
-          </Item>
-          <Item floatingLabel>
-            <Label>password</Label>
-            <Input onChangeText={password => this.setState({ password })} />
-          </Item>
+              <Item 
+                rounded
+                style={styles.formInput}>
+                <Input     
+                  placeholder = "Password"
+                  underlineColorAndroid = "transparent" 
+                  secureTextEntry = { this.state.hidePassword } 
+                  style = { styles.textBox }
+                  onChangeText={password => this.setState({ password })}
+                />
+                <TouchableOpacity 
+                  activeOpacity = { 0.8 } 
+                  style = { styles.visibilityBtn } 
+                  onPress = { this.managePasswordVisibility }>
+                  <Image 
+                    source = { ( this.state.hidePassword ) ? require('../assets/Images/hide.png') : require('../assets/Images/view.png') } 
+                    style = { styles.btnImage } />
+                </TouchableOpacity>
+              </Item>
+              <GradientButton
+                style={{ marginVertical: 8, marginTop: 15, alignSelf: 'center'}}
+                text="User Login"
+                textStyle={{ fontSize: 20, color: '#FF6D6F'}}      
+                gradientBegin="#FFF"
+                gradientEnd="#FFF"           
+                gradientDirection="diagonal"
+                height={50}
+                width={150}
+                radius={50}
+                success
+                onPressAction={() => this.loginUser(this.state.email, this.state.password)}
+              />
+              <GradientButton
+                style={{ marginVertical: 8, marginTop: 15, alignSelf: 'center'}}
+                text="Vendor Login"
+                textStyle={{ fontSize: 20, color: '#FF6D6F'}}      
+                gradientBegin="#FFF"
+                gradientEnd="#FFF"           
+                gradientDirection="diagonal"
+                height={50}
+                width={150}
+                radius={50}
+                success
+                onPressAction={() => this.loginVendor(this.state.email, this.state.password)}
+              />
+            </Form>
+          </View>
 
-          <Button
-            style={{ marginTop: 10, backgroundColor: '#135AA8' }}
-            full
-            rounded
-            success
-            onPress={() =>
-              this.loginUser(this.state.email, this.state.password)
-            }
-          >
-            <Text style ={{color:'white'}}> Sign in </Text>
-          </Button>
-
-          <Button
-            style={{ marginTop: 10, backgroundColor:'black' }}
-            full
-            rounded
-            success
-            onPress={() =>
-              this.loginVendor(this.state.email, this.state.password)
-            }
-          >
-            <Text style ={{color:'white'}}> Sign in as vendor </Text>
-          </Button>
-
-          <Text
-            style={{ marginTop: 10, padding: 15, textAlign: "center" }}
-            onPress={() =>
-              this.signUpUser(this.state.email, this.state.password)
-            }
-          >
-            Don' have an account? Sign Up
-            <Text style={{ textDecorationLine: "underline" }}> here </Text>
-          </Text>
-
-          <Text style={{ textAlign: "center" }}>{this.state.error}</Text>
-        </Form>
-      </Container>
+          <View style={styles.bottom}>
+            <Text
+              style={styles.smallFont}
+              onPress={() =>this.signUpUser(this.state.email, this.state.password)}
+            >
+              Don't have an account? Sign up{" "}
+              <Text style={{ textDecorationLine: "underline" }}>here</Text>
+            </Text>
+          </View>
+        </ImageBackground>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 10,
-    justifyContent: "center"
-  },
-  mainTitle: {
-    textAlign: "center"
-  }
-});
